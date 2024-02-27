@@ -1,0 +1,7 @@
+{
+    "watch": ["src"],
+    "ignore": ["src/**/*.test.ts", "node_modules"],
+    "ext": "ts,mjs,js,json,graphql",
+    "exec": "etsc && copyfiles -u 1 src/**/*.json dist && node ./dist/index.js ",
+    "legacyWatch": true
+}
