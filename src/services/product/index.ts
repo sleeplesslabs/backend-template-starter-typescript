@@ -1,3 +1,4 @@
+import CustomException from "../../helpers/error/customException";
 import ProductRepository from "../../repositories/product";
 
 export default class ProductService{
@@ -26,6 +27,16 @@ export default class ProductService{
     }
 
     async editProductByIdService(){}
-    async deleteProductByIdService(){}
+
+    async deleteProductByIdService(productId: string){
+        const findData = await this.productRepository.getById(productId);
+
+        if (!findData.value){
+            throw new CustomException([{error: 'productId', message: "Produk Tidak Ditemukan"}], 404)
+        }
+
+        const data = await this.productRepository.deleteById(productId);
+        return data;
+    }
 
 }

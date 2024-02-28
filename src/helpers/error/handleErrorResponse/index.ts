@@ -2,9 +2,10 @@ import { Response } from 'express';
 import { logger } from "../../log";
 import { ValidationException } from "../../../helpers/validator"; 
 import ErrorFormatter from "../../../helpers/response/error";
+import CustomException from '../customException';
 
 const HandleErrorResponse = (res: Response, error: any) => {
-    if (error instanceof ValidationException) {
+    if (error instanceof ValidationException || error instanceof CustomException) {
       const response = ErrorFormatter(error.toResponseObject());
       return res.status(error.status).send(response);
     } else {
