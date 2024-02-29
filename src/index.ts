@@ -1,12 +1,12 @@
 import express from 'express';
-import Database from './configs/database';
+// import Database from './configs/database';
 import { logger } from './helpers/log';
 import ProductRepository from './repositories/product';
 import Routes from './routes';
 
 
 try {
-    Database.sync({force: false});
+    // Database.sync({force: false});
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
@@ -17,19 +17,7 @@ try {
 
     const port = 3000;
 
-    const productRepository = new ProductRepository()
-    app.get("/a", (req, res) => {
-
-        try {
-            const a = productRepository.getAll()
-            return res.send(a)
-        } catch (error) {
-            
-        }
-
-    });
-
-        app.use("/api", Routes);
+    // app.use("/api", Routes);
 
 
     app.listen(port, () => {
