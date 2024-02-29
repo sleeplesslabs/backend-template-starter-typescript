@@ -42,6 +42,18 @@ export default class ProductController {
         try {
             const data: CreateProductRequest = req.body;
             const validatedData = Validator.validate(data, CreateProductRequest.getSchema());
+
+            const result = await this.productService.createProductService(validatedData);
+
+            if (result.isSuccess){
+                const response = SuccessSingularFormatter("Berhasil Buat Produk Baru", result.value);
+                return res.status(201).send(response)
+            }else {
+                const error  = result.getError();
+                const response = ErrorFormatter(error.message)
+                return res.status(error.code).send(response);
+            }
+
         } catch (error) {
             HandleErrorResponse(res, error);
         }
@@ -54,8 +66,12 @@ export default class ProductController {
         const result = await this.productService.getProductByIdService(productId);
 
         if (result.isSuccess){
+            if(result.value){
                 const response = SuccessSingularFormatter("Data Produk", result.value);
                 return res.status(200).send(response);
+            }
+            const response = ErrorFormatter("Data Produk Tidak Ditemukan");
+            return res.status(404).send(response);
         } else {
             const error  = result.getError();
             const response = ErrorFormatter(error.message)
@@ -71,6 +87,17 @@ export default class ProductController {
             const productId = req.params.productId as string; 
             const data: EditProductRequest = req.body;
             const validatedData = Validator.validate(data, EditProductRequest.getSchema());
+
+            const result = await this.productService.editProductByIdService(productId, validatedData);
+
+            if(result.isSuccess){
+                const response = SuccessSingularFormatter("Berhasil Ubah Data Produk", result.value);
+                return res.status(200).send(response);
+            } else {
+                const error  = result.getError();
+                const response = ErrorFormatter(error.message)
+                return res.status(error.code).send(response);
+            }
         } catch (error) {
             HandleErrorResponse(res, error);
         }

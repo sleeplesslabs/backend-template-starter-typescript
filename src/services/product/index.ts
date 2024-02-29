@@ -1,3 +1,5 @@
+import CreateProductRequest from "../../domains/web/product/createProductRequest";
+import EditProductRequest from "../../domains/web/product/editProductRequest";
 import CustomException from "../../helpers/error/customException";
 import ProductRepository from "../../repositories/product";
 
@@ -21,12 +23,27 @@ export default class ProductService{
         return data
     }
 
+    async createProductService(createProductRequest: CreateProductRequest){
+        const data = await this.productRepository.create(createProductRequest);
+        return data;
+    }
+
     async getProductByIdService(productId: string){
         const data = await this.productRepository.getById(productId);
         return data;
     }
 
-    async editProductByIdService(){}
+    async editProductByIdService(productId: string, editProductRequest: EditProductRequest){
+        const findData = await this.productRepository.getById(productId);
+
+        if (!findData.value){
+            throw new CustomException([{error: 'productId', message: "Produk Tidak Ditemukan"}], 404)
+        }
+
+        const data = await this.productRepository.update(productId, editProductRequest)
+        return data
+
+    }
 
     async deleteProductByIdService(productId: string){
         const findData = await this.productRepository.getById(productId);
