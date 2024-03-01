@@ -1,7 +1,6 @@
 import express from 'express';
 // import Database from './configs/database';
 import { logger } from './helpers/log';
-import ProductRepository from './repositories/product';
 import Routes from './routes';
 
 
