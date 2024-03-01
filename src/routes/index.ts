@@ -3,8 +3,18 @@ import productRouter from "./product";
 import DatabaseSeeder from "../domains/model/seeder/databaseSeeder";
 import authRouter from "./auth";
 
-const indexRoutes = Router();
 
+declare global {
+    namespace Express {
+      interface Request {
+        authId: string;
+        jti: string;
+      }
+    }
+  }
+
+
+const indexRoutes = Router();
 
 indexRoutes.get("/seed", DatabaseSeeder);
 

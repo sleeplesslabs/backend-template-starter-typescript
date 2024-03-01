@@ -14,4 +14,17 @@ export default class AuthRepository {
             return Result.fail(new RepoError(error.message, 500));
         }
     }
+
+    async getProfileById(authId: string): Promise<any>{
+        try {
+            const data = await AuthModel.findByPk(authId, {
+                attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+            });
+            return Result.ok(data);
+        } catch (error: any) {
+            logger.error(error);
+            return Result.fail(new RepoError(error.message, 500));
+        }
+    }
+
 }
