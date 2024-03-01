@@ -4,6 +4,7 @@ import Database  from "../../../configs/database";
 export default class AuthModel extends Model {
     declare authId: string;
     declare email: string;
+    declare password: string;
     declare status: string;
     declare roles: string;
 } 
@@ -21,6 +22,10 @@ AuthModel.init(
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
       status: {
         type: DataTypes.ENUM,
