@@ -4,21 +4,24 @@ import AuthRepository from "../../repositories/auth";
 import bcryptjs from "bcryptjs";
 import GenerateJWT from "../../helpers/jwt";
 import { v4 as uuidv4 } from 'uuid';
-import { expiresAccessToken } from "../../helpers/constant";
+import { expiresAccessToken, expiresRefreshToken } from "../../helpers/constant";
+import RefreshTokenRepository from "src/repositories/refreshToken";
 
 
 export default class AuthService{
     private authRepository: AuthRepository;
+    private refreshTokenRepository: RefreshTokenRepository;
     private static instance: AuthService;
 
-    private constructor(authRepository: AuthRepository){
+    private constructor(authRepository: AuthRepository, refreshTokenRepository: RefreshTokenRepository){
         this.authRepository = authRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     
-    static getInstance(authRepository: AuthRepository){
+    static getInstance(authRepository: AuthRepository, refreshTokenRepository: RefreshTokenRepository){
         if(!this.instance){
-            this.instance = new AuthService(authRepository);
+            this.instance = new AuthService(authRepository, refreshTokenRepository);
         }
         return this.instance
     }
@@ -40,10 +43,22 @@ export default class AuthService{
         }
 
         const valueJTI = uuidv4(); 
+        const accessToken = GenerateJWT(findUser.value, valueJTI, expiresAccessToken);
+        const refreshToken = GenerateJWT(findUser.value, valueJTI, expiresRefreshToken);
 
+        const dataValue = {
+            refresh_token: refreshToken,
+            authId: findUser.value.authId,
+            jti: valueJTI,
+            platform: loginRequest.platform,
+            browser: loginRequest.browser,
+            latitude: loginRequest.latitude,
+            longitude: loginRequest.longitude,
+        }            
+        
+        const result = await this.refreshTokenRepository.add(dataValue)
 
-        const token = GenerateJWT(findUser.value, valueJTI, expiresAccessToken);
-        return token;
+        return {result, accessToken};
 
     }
 

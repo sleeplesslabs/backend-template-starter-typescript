@@ -20,9 +20,15 @@ export default class AuthController{
         try {
             const data: LoginRequest = req.body;
             const validatedData = Validator.validate(data, LoginRequest.getSchema());
-            const result = await this.authService.loginService(validatedData);
-            const response = SuccessSingularFormatter('Berhasil login', {token: result});
-            return res.status(200).send(response);
+            const {result, accessToken} = await this.authService.loginService(validatedData);
+            if(result.isSuccess){
+                const response = SuccessSingularFormatter('Berhasil Login', {token: accessToken});
+                return res.status(200).send(response);
+            }else {
+                const error  = result.getError();
+                const response = ErrorFormatter(error.message)
+                return res.status(error.code).send(response);
+            }
         } catch (error) {
             HandleErrorResponse(res, error);
         }

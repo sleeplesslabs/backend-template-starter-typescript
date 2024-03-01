@@ -1,6 +1,6 @@
 import { logger } from "../../helpers/log";
-import { ProductModel }  from "../../domains/model/index";
 import { RepoError, Result } from "../result";
+import { ProductModel }  from "../../domains/model/index";
 import CreateProductRequest from "../../domains/web/product/createProductRequest";
 import EditProductRequest from "../../domains/web/product/editProductRequest";
 import { v4 as uuidv4 } from 'uuid';
