@@ -29,8 +29,8 @@ AuthModel.init(
     },
       roles: {
         type: DataTypes.ENUM,
-        values: ["admin", "employee"],
-        defaultValue: "employee"
+        values: ["admin", "member", ""],
+        defaultValue: ""
     },
     },
     {

@@ -5,7 +5,6 @@ export default class BiodataModel extends Model {
     declare biodataId: string;
     declare authId: string;
     declare full_name: string;  
-    declare personal_email: string;
     declare phone_number: string;
 } 
 
@@ -27,7 +26,6 @@ BiodataModel.init(
         type: DataTypes.STRING,
         allowNull: true,
       },
-
       phone_number: {
         type: DataTypes.STRING,
         allowNull: true,

@@ -1,11 +1,11 @@
 import express from 'express';
-// import Database from './configs/database';
+import Database from './configs/database';
 import { logger } from './helpers/log';
 import Routes from './routes';
 
 
 try {
-    // Database.sync({force: false});
+    Database.sync({force: true});
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));
@@ -16,7 +16,7 @@ try {
 
     const port = 3000;
 
-    // app.use("/api", Routes);
+    app.use("/api", Routes);
 
 
     app.listen(port, () => {
