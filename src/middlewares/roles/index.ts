@@ -17,7 +17,6 @@ export default function MiddlewareRoles (allowedRoles: Array<string>){
         if (findUser.isSuccess){
             const roleUser = findUser.value.roles;
             const hasPermission = allowedRoles.some((roles) => roleUser.includes(roles));
-            console.log(hasPermission)
             if (!hasPermission){
                 const response = ErrorFormatter("Forbidden Access!");
                 return res.status(403).send(response)
