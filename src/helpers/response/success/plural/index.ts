@@ -1,4 +1,4 @@
-export default function SuccessPluralFormatter(message: string, meta: object, data: Array<object> | object){
+export default function SuccessPluralFormatter(message: string, meta: object | null, data: Array<object> | object){
     const response: object = {
       info: {
         success: true,
