@@ -5,7 +5,7 @@ import Routes from './routes';
 
 
 try {
-    Database.sync({force: true});
+    Database.sync({force: false});
     const app = express();
     app.use(express.json());
     app.use(express.urlencoded({extended: true}));

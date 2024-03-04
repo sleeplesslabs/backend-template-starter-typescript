@@ -61,7 +61,35 @@ export default class AuthService{
         return {result, accessToken};
 
     }
+    async getProfileService(authId: string){
+        const data = await this.authRepository.getProfileById(authId);
+        if (!data.value) {
+            throw new CustomException([{ error: 'Profile', message: 'Profile Tidak Ditemukan' }], 404);
+        }
 
+        return data; 
+    }
+
+
+    async getHistoryService(authId: string){
+        const data = await this.refreshTokenRepository.findAllByAuthId(authId);
+        if (!data.value) {
+            throw new CustomException([{ error: 'Profile', message: 'Riwayat Login Tidak Ditemukan' }], 404);
+        }
+
+        return data; 
+    }
+
+    async logoutService(JWTId: string){
+        const findData = await this.refreshTokenRepository.findByJTI(JWTId)
+
+        if (!findData.value){
+            throw new CustomException([{ error: 'Refresh Token', message: "Refresh Token Tidak Ditemukan" }], 404);
+        }
+
+        const data = await this.refreshTokenRepository.delete(JWTId);
+        return data; 
+    }
 
 
 

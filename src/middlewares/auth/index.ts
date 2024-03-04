@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from "jsonwebtoken"
 import RefreshTokenRepository from '../../repositories/refreshToken';
-import CustomException from '../../helpers/error/customException';
-import { expiresAccessToken, expiresRefreshToken } from '../../helpers/constant';
+import { expiresAccessToken } from '../../helpers/constant';
 import ErrorFormatter from '../../helpers/response/error';
 import GenerateJWT from '../../helpers/jwt';
 import AuthRepository from '../../repositories/auth';
@@ -20,12 +19,13 @@ export default async function MiddlewareAuth(req: Request, res: Response, next: 
         try {
             const bearer = bearerHeader.split(' ');
             const accessTokenFromHeader = bearer[1];
-            jwt.verify(accessTokenFromHeader, process.env.SECRET_KEY as string, {ignoreExpiration: true});
+            jwt.verify(accessTokenFromHeader, "secretkey" as string, {ignoreExpiration: true});
             const decodeAccessToken = jwt.decode(accessTokenFromHeader, signOptions) as jwt.JwtPayload;
             const currentTimestamp = Date.now() / 1000;
 
             const findRefreshToken = await refreshTokenRepository.findByJTI(decodeAccessToken.payload.jti);
             if (findRefreshToken.isSuccess){
+                if(findRefreshToken.value != null){
                 const findAuth = await authRepository.getProfileById(findRefreshToken.value.authId);
                 if (findAuth.isSuccess){
 
@@ -37,7 +37,7 @@ export default async function MiddlewareAuth(req: Request, res: Response, next: 
 
                         if(currentTimestamp >= verifyRefreshToken.payload.exp){
                             await refreshTokenRepository.delete(verifyRefreshToken.payload.jti);
-                            const response = ErrorFormatter("Refresh token tidak valid");
+                            const response = ErrorFormatter("Refresh Token Tidak Valid");
                             return res.status(401).send(response);
                         }else {
         
@@ -65,6 +65,11 @@ export default async function MiddlewareAuth(req: Request, res: Response, next: 
                     return res.status(401).send(response);
                 }
 
+            } else {
+                const response = ErrorFormatter("Refresh Token Tidak Valid");
+                return res.status(401).send(response)
+            }
+
 
             } else {
                 const error  = findRefreshToken.getError();
@@ -78,7 +83,7 @@ export default async function MiddlewareAuth(req: Request, res: Response, next: 
             return res.status(401).send(response);
         }
     } else {
-        const response = ErrorFormatter("Forbidden Access, Please Provide Your JWT Token");
+        const response = ErrorFormatter("Akses Terlarang, Harap Berikan Token JWT Anda");
         return res.status(403).send(response)
     }
 }
