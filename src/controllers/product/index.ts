@@ -67,7 +67,7 @@ export default class ProductController {
 
         if (result.isSuccess){
             if(result.value){
-                const response = SuccessSingularFormatter("Data Produk", result.value);
+                const response = SuccessSingularFormatter("Data Semua Produk", result.value);
                 return res.status(200).send(response);
             }
             const response = ErrorFormatter("Data Produk Tidak Ditemukan");

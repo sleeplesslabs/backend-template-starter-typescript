@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  postgres-database:
+    image: postgres:14-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=template
+
+  template-apps:
+    image: template-backend:latest
+    container_name: template-backend
+    restart: always
+    ports:
+      - "6969:6969/tcp"
+    environment:
+      - DATABASE_CONNECTION=postgres-database
+    depends_on:
+      - postgres-database

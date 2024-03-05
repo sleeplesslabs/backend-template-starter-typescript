@@ -4,6 +4,7 @@ import { ProductModel }  from "../../domains/model/index";
 import CreateProductRequest from "../../domains/web/product/createProductRequest";
 import EditProductRequest from "../../domains/web/product/editProductRequest";
 import { v4 as uuidv4 } from 'uuid';
+import { Op } from "sequelize";
 
 export default class ProductRepository  {
 
@@ -54,6 +55,32 @@ export default class ProductRepository  {
         try {
             const data = await ProductModel.destroy({where: {productId}});
             return Result.ok(data);    
+        } catch (error: any) {
+            logger.error(error);
+            return Result.fail(new RepoError(error.message, 500));
+        }
+    }
+
+    async findProductBySKU(stock_keeping_unit: string): Promise<any>{
+        try {
+            const data = await ProductModel.findOne({where: {stock_keeping_unit}});
+            return Result.ok(data);
+        } catch (error: any) {
+            logger.error(error);
+            return Result.fail(new RepoError(error.message, 500));
+        }
+    }
+
+    async findSKUExcludingId(productId: string, stock_keeping_unit: string): Promise<any>{
+        try {
+            const data = await ProductModel.findOne({
+                where: {
+                    stock_keeping_unit: stock_keeping_unit, 
+                    productId: {
+                        [Op.ne]: productId
+                    }
+            }});
+            return Result.ok(data);
         } catch (error: any) {
             logger.error(error);
             return Result.fail(new RepoError(error.message, 500));

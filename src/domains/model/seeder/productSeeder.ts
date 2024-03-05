@@ -49,7 +49,7 @@ export default class ProductSeeder {
       },      
       {
         productId: uuidv4(),
-        stock_keeping_unit: "",
+        stock_keeping_unit: "VICPzcJ4ge8DZBbzJvdPl6y07Lcf6ApQ",
         name: "PC Gaming", 
         brand_name: "MSI",
         price: 700_000,

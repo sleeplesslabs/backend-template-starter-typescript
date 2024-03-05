@@ -24,6 +24,10 @@ export default class ProductService{
     }
 
     async createProductService(createProductRequest: CreateProductRequest){
+        const findProduct = await this.productRepository.findProductBySKU(createProductRequest.stock_keeping_unit);
+        if(findProduct.value){
+            throw new CustomException([{ error: 'stock_keeping_unit', message: "SKU Product Sudah Ada" }], 409);
+        }
         const data = await this.productRepository.create(createProductRequest);
         return data;
     }
@@ -37,9 +41,14 @@ export default class ProductService{
         const findData = await this.productRepository.getById(productId);
 
         if (!findData.value){
-            throw new CustomException([{error: 'productId', message: "Produk Tidak Ditemukan"}], 404)
+            throw new CustomException([{error: 'productId', message: "Produk Tidak Ditemukan"}], 204)
         }
 
+        const findProduct = await this.productRepository.findSKUExcludingId(productId, editProductRequest.stock_keeping_unit);
+
+        if (findProduct.value) {
+            throw new CustomException([{ error: 'stock_keeping_unit', message: "SKU Product Sudah Ada" }], 204);
+        }
         const data = await this.productRepository.update(productId, editProductRequest)
         return data
 
@@ -49,7 +58,7 @@ export default class ProductService{
         const findData = await this.productRepository.getById(productId);
 
         if (!findData.value){
-            throw new CustomException([{error: 'productId', message: "Produk Tidak Ditemukan"}], 404)
+            throw new CustomException([{error: 'productId', message: "Produk Tidak Ditemukan"}], 204)
         }
 
         const data = await this.productRepository.deleteById(productId);
