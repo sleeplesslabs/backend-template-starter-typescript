@@ -1,4 +1,7 @@
 import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
  const Database = new Sequelize({
   database: process.env.DATABASE_NAME || 'template',

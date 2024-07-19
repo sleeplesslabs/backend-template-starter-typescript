@@ -15,8 +15,6 @@ const authController = new AuthController(authService);
 authRouter.post("/auth/login", async(req, res) => authController.loginController(req, res));
 authRouter.get("/auth/profile", MiddlewareAuth, async (req, res) => authController.profileController(req, res));
 authRouter.get("/auth/history", MiddlewareAuth, async (req, res) => authController.historyController(req, res));
-authRouter.post("/auth/logout", MiddlewareAuth, async (req, res) => authController.logoutController(req, res));
-
-// authRouter.use("/auth", authRouter)
+authRouter.post("/auth/revoke", MiddlewareAuth, async (req, res) => authController.revokeController(req, res));
 
 export default authRouter;

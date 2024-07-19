@@ -79,20 +79,20 @@ export default class AuthController{
         }
     }
 
-    async logoutController(req: Request, res: Response){
+    async revokeController(req: Request, res: Response){
         try {
-            const JWTId = req.jti as string;
-            const result = await this.authService.logoutService(JWTId);
+            const findData = await this.authService.getRefrehTokenServiceByJTI(req.jti);
 
-            if (result.isSuccess){
-                const response = SuccessSingularFormatter("Berhasil Logout", null);
+            if (findData.isSuccess){
+                await this.authService.revokeRefrehTokenService(req.jti)
+                const response = SuccessSingularFormatter("Berhasil Hapus Refresh Token", findData.value);
                 return res.status(200).send(response);
-            }else {
-                const error  = result.getError();
-                console.log(error)
+            } else {
+                const error  = findData.getError();
                 const response = ErrorFormatter(error.message)
                 return res.status(error.code).send(response);
             }
+            
         } catch (error) {
             HandleErrorResponse(res, error);
         }

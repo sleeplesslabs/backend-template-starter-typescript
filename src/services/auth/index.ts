@@ -91,6 +91,19 @@ export default class AuthService{
         return data; 
     }
 
+    async getRefrehTokenServiceByJTI(jti: string){
+        const findRefreshToken = await this.refreshTokenRepository.findByJTI(jti);
+        if (!findRefreshToken.value) {
+            throw new CustomException([{ error: 'Refresh Token', message: 'Refresh Token Tidak Ditemukan' }], 404);
+        }
+        return findRefreshToken; 
+    }
+
+    async revokeRefrehTokenService(jti: string){
+        const removeRefreshToken = await this.refreshTokenRepository.delete(jti);
+        return removeRefreshToken; 
+    }
+
 
 
     
