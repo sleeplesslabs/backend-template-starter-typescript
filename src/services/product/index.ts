@@ -1,5 +1,5 @@
-import CreateProductRequest from "../../domains/web/product/createProductRequest";
-import EditProductRequest from "../../domains/web/product/editProductRequest";
+import CreateProductRequest from "../../domains/web/product/request/createProductRequest";
+import EditProductRequest from "../../domains/web/product/request/editProductRequest";
 import CustomException from "../../helpers/error/customException";
 import ProductRepository from "../../repositories/product";
 

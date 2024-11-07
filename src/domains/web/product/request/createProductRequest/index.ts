@@ -1,17 +1,13 @@
 import Joi from 'joi';
 
 export default class CreateProductRequest {
-    name: string;
-    stock_keeping_unit: string;
-    brand_name: string;
-    price: number;
-
-    constructor(name: string, brand_name: string, stock_keeping_unit: string, price: number) {
-        this.name = name;
-        this.price = price;
-        this.brand_name = brand_name;
-        this.stock_keeping_unit = stock_keeping_unit;
-    }
+    private constructor(        
+        public readonly name: string,
+        public readonly stock_keeping_unit: string,
+        public readonly brand_name: string,
+        public readonly price: number
+    ) {}
+    
 
     static getSchema() {
         return Joi.object({

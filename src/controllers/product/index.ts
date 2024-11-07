@@ -4,8 +4,8 @@ import SuccessPluralFormatter from "../../helpers/response/success/plural";
 import ProductService from "../../services/product";
 import { Request, Response } from "express-serve-static-core";
 import HandleErrorResponse from "../../helpers/error/handleErrorResponse";
-import CreateProductRequest from "../../domains/web/product/createProductRequest";
-import EditProductRequest from "../../domains/web/product/editProductRequest";
+import CreateProductRequest from "../../domains/web/product/request/createProductRequest";
+import EditProductRequest from "../../domains/web/product/request/editProductRequest";
 import { Validator } from "../../helpers/validator";
 
 export default class ProductController {
@@ -44,21 +44,24 @@ export default class ProductController {
             const validatedData = Validator.validate(data, CreateProductRequest.getSchema());
 
             const result = await this.productService.createProductService(validatedData);
-
-            if (result.isSuccess){
-                const response = SuccessSingularFormatter("Berhasil Buat Produk Baru", result.value);
-                return res.status(201).send(response)
-            }else {
-                const error  = result.getError();
-                const response = ErrorFormatter(error.message)
-                return res.status(error.code).send(response);
+            console.log(result);
+  
+            if (result.isSuccess) {
+                return res.status(201).json(
+                  SuccessSingularFormatter("Berhasil Buat Produk Baru", result.getValue())
+                );
             }
+            
+                const error = result.getError();
+                const response = ErrorFormatter(error.message);
+                return res.status(error.code).send(response);
+
 
         } catch (error) {
             HandleErrorResponse(res, error);
         }
     }
-
+  
 
     async getProductByIdController(req: Request, res: Response){
         try {

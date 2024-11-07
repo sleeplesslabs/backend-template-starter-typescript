@@ -1,10 +1,11 @@
 import { logger } from "../../helpers/log";
-import { RepoError, Result } from "../result";
+import { RepoError, RepoResult, Result } from "../result";
 import { ProductModel }  from "../../domains/model/index";
-import CreateProductRequest from "../../domains/web/product/createProductRequest";
-import EditProductRequest from "../../domains/web/product/editProductRequest";
+import CreateProductRequest from "../../domains/web/product/request/createProductRequest";
+import EditProductRequest from "../../domains/web/product/request/editProductRequest";
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from "sequelize";
+import CreateProductResponse from "../../domains/web/product/response/createProductRequest";
 
 export default class ProductRepository  {
 
@@ -28,13 +29,14 @@ export default class ProductRepository  {
         }
     }
     
-    async create(createProductRequest: CreateProductRequest): Promise<any>{
+    async create(createProductRequest: CreateProductRequest): RepoResult<CreateProductResponse> {
         try {
             const data = await ProductModel.create({
                 ...createProductRequest,
                 productId: uuidv4()
             });        
-            return Result.ok(data);
+            const response = CreateProductResponse.ConvertResponse(data);
+            return Result.ok(response);
         } catch (error: any) {
             logger.error(error)
             return Result.fail(new RepoError(error.message, 500));
