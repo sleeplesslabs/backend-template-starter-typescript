@@ -1,0 +1,49 @@
+serviceAccount: "trigger-build@week-consultation-06-fr.iam.gserviceaccount.com"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - "build"
+      - "-t"
+      - "asia.gcr.io/week-consultation-06-fr/friendease-backend-testing:$COMMIT_SHA"
+      - "-f"
+      - "./deploy/Dockerfile"
+      - "."
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - "push"
+      - "asia.gcr.io/week-consultation-06-fr/friendease-backend-testing:$COMMIT_SHA"
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - "run"
+      - "deploy"
+      - "friendease-backend"
+      - "--image=asia.gcr.io/week-consultation-06-fr/friendease-backend-testing:$COMMIT_SHA"
+      - "--region=asia-southeast1"
+      - "--cpu=2"
+      - "--memory=2048Mi"
+      - "--allow-unauthenticated"
+    secretEnv: 
+      - "DATABASE_NAME"
+      - "DATABASE_USERNAME"
+      - "DATABASE_PASSWORD"
+      - "DATABASE_CONNECTION"
+
+images:
+  - "asia.gcr.io/week-consultation-06-fr/friendease-backend-testing:$COMMIT_SHA"
+
+timeout: 3600s
+
+availableSecrets:
+  secretManager:
+    - versionName: "projects/479972758983/secrets/DATABASE_NAME/versions/latest"
+      env: "DATABASE_NAME"
+    - versionName: "projects/479972758983/secrets/DATABASE_USERNAME/versions/latest"
+      env: "DATABASE_USERNAME"
+    - versionName: "projects/479972758983/secrets/DATABASE_PASSWORD/versions/latest"
+      env: "DATABASE_PASSWORD"
+    - versionName: "projects/479972758983/secrets/DATABASE_CONNECTION/versions/latest"
+      env: "DATABASE_CONNECTION"
