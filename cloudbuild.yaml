@@ -20,7 +20,7 @@ steps:
     args:
       - "run"
       - "deploy"
-      - "friendease-backend"
+      - "backend-template-starter"
       - "--image=asia.gcr.io/week-consultation-06-fr/backend-template-starter:$COMMIT_SHA"
       - "--region=asia-southeast1"
       - "--cpu=2"
