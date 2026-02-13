@@ -3,14 +3,12 @@ import { logger } from "../../../helpers/log";
 import Database from "../../../configs/database";
 import ProductSeeder from './productSeeder';
 import AuthSeeder from './authSeeder';
-import BiodataSeeder from './biodataSeeder';
 
 export default async function DatabaseSeeder(req: Request, res: Response) {
     try {
       await Database.sync();
       
       const authSeeder = new AuthSeeder();
-      const biodataSeeder = new BiodataSeeder();
       const productSeeder = new ProductSeeder();
 
       await productSeeder.run();
